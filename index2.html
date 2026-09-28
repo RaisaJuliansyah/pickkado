@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PickKado - Bingung Pilih Kado? PickKado Aja!</title>
+    <style>
+        /* --- CSS VARIABLES & BASE STYLES --- */
+        :root {
+            --bg-cream: #FFFDF7;
+            --card-cream: #F9F5EC;
+            --primary-blue: #3B6BB0;
+            --accent-gold: #E5A93C;
+            --dark-text: #2D3748;
+            --light-gray: #EDF2F7;
+            --white: #FFFFFF;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --border-radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- NAVBAR --- */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: var(--accent-gold);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .btn-cta {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-cta:hover {
+            background-color: #2c528c;
+            transform: translateY(-2px);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            padding: 4rem 5%;
+            text-align: center;
+            background: linear-gradient(180deg, var(--white) 0%, var(--bg-cream) 100%);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* --- FITUR INTERAKTIF: PILIH KADO (QUIZ) --- */
+        .quiz-section {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            max-width: 700px;
+            margin: -2rem auto 3rem;
+            position: relative;
+            z-index: 10;
+            border: 2px solid #F0E6D2;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-step {
+            display: none;
+        }
+
+        .quiz-step.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .option-btn {
+            background: var(--card-cream);
+            border: 2px solid transparent;
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .option-btn:hover, .option-btn.selected {
+            border-color: var(--accent-gold);
+            background-color: #FFF3DB;
+        }
+
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark-text);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* --- KATALOG PRODUK --- */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin: 3rem 0 1rem;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 1rem 5%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img {
+            height: 180px;
+            background-color: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-text);
+        }
+
+        .card-price {
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        /* --- PREVIEW PERSONALISASI (INTERAKTIF) --- */
+        .personalization-section {
+            background: var(--card-cream);
+            padding: 3rem 5%;
+            margin: 4rem 0;
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 2rem auto 0;
+            align-items: center;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #CBD5E0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .card-preview {
+            flex: 1;
+            min-width: 280px;
+            background: var(--white);
+            border: 2px dashed var(--accent-gold);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+        }
+
+        .card-preview h4 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .preview-text {
+            font-style: italic;
+            color: #4A5568;
+            margin: 1rem 0;
+            min-height: 60px;
+        }
+
+        /* --- FAQ ACCORDION --- */
+        .faq-section {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 5%;
+        }
+
+        .accordion-item {
+            background: var(--white);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 1.2rem;
+            background: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-content {
+            padding: 0 1.2rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            background: #FAFAFA;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .accordion-item.active .accordion-content {
+            padding: 1.2rem;
+            max-height: 200px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--primary-blue);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">🎁 Pick<span>Kado</span></div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#pilih-kado">Pilih Kado</a></li>
+                <li><a href="#katalog">Katalog</a></li>
+                <li><a href="#personalisasi">Kartu Custom</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            <button class="btn-cta" onclick="scrollToQuiz()">Mulai Cari</button>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <h1>"Bingung Pilih Kado? PickKado Aja!"</h1>
+        <p>Solusi praktis kurasi hadiah lengkap (Cake, Gift Item, & Kartu Ucapan) khusus mahasiswa dan anak muda. Tanpa repot, pas di kantong!</p>
+    </section>
+
+    <!-- FITUR INTERAKTIF: QUIZ PILIH KADO -->
+    <section class="quiz-section" id="pilih-kado">
+        <div class="quiz-header">
+            <h2>Fitur "Pilih Kado" 🎯</h2>
+            <p>Jawab 3 pertanyaan cepat untuk mendapatkan rekomendasi terbaik!</p>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="quiz-step active" id="step-1">
+            <h3>1. Kado ini untuk siapa?</h3>
+            <div class="quiz-options">
+                <div class="option-btn" onclick="selectOption('recipient', 'Teman/Bestie', this)">👭 Teman / Bestie</div>
+                <div class="option-btn" onclick="selectOption('recipient', 'Pacar', this)">💖 Pasangan / Pacar</div>
+                <div class="option-btn" onclick="selectOption('recipient', 'Diri Sendiri', this)">✨ Diri Sendiri</div>
+                <div class="option-btn" onclick="selectOption('recipient', 'Dosen/Senior', this)">🎓 Dosen / Senior</div>
+            </div>
+            <div class="quiz-nav">
+                <div></div>
+                <button class="btn-cta" onclick="nextStep(2)">Lanjut ➔</button>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="quiz-step" id="step-2">
+            <h3>2. Dalam rangka momen apa?</h3>
+            <div class="quiz-options">
+                <div class="option-btn" onclick="selectOption('occasion', 'Ulang Tahun', this)">🎂 Ulang Tahun</div>
+                <div class="option-btn" onclick="selectOption('occasion', 'Wisuda', this)">🎓 Wisuda / Sempro</div>
+                <div class="option-btn" onclick="selectOption('occasion', 'Terima Kasih', this)">🙏 Ucapan Terima Kasih</div>
+                <div class="option-btn" onclick="selectOption('occasion', 'Self Reward', this)">🎁 Self-Reward</div>
+            </div>
+            <div class="quiz-nav">
+                <button class="btn-secondary" onclick="nextStep(1)">⬅ Kembali</button>
+                <button class="btn-cta" onclick="nextStep(3)">Lanjut ➔</button>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="quiz-step" id="step-3">
+            <h3>3. Berapa budget kamu?</h3>
+            <div class="quiz-options">
+                <div class="option-btn" onclick="selectOption('budget', '80k', this)">Rp 75.000 - Rp 85.000</div>
+                <div class="option-btn" onclick="selectOption('budget', '100k', this)">Rp 85.000 - Rp 120.000</div>
+                <div class="option-btn" onclick="selectOption('budget', '150k', this)">Rp 120.000 - Rp 150.000</div>
+            </div>
+            <div class="quiz-nav">
+                <button class="btn-secondary" onclick="nextStep(2)">⬅ Kembali</button>
+                <button class="btn-cta" style="background-color: var(--accent-gold);" onclick="showRecommendation()">Lihat Rekomendasi! ✨</button>
+            </div>
+        </div>
+
+        <!-- Hasil Rekomendasi -->
+        <div class="quiz-step" id="step-result">
+            <h3 style="text-align: center;">Rekomendasi Paket Untukmu:</h3>
+            <div id="result-content" style="margin: 1.5rem 0; text-align: center;"></div>
+            <div class="quiz-nav" style="justify-content: center; gap: 1rem;">
+                <button class="btn-secondary" onclick="resetQuiz()">🔄 Coba Lagi</button>
+                <a id="wa-order-btn" href="#" target="_blank" class="btn-cta" style="background-color: #25D366;">📱 Pesan via WhatsApp</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- KATALOG PRODUK -->
+    <section id="katalog">
+        <h2 class="section-title">Katalog Pilihan Paket</h2>
+        <div class="catalog-grid">
+            <div class="card">
+                <div class="card-img">🎂</div>
+                <div class="card-body">
+                    <h3 class="card-title">Birthday Pick</h3>
+                    <div class="card-price">Rp 125.000</div>
+                    <p class="card-desc">Paket lengkap Ulang Tahun! Termasuk Mini Cake dari Bakery Mitra, Snack, Kartu Ucapan Custom, & Hardbox Eksklusif.</p>
+                    <button class="btn-cta" onclick="orderDirect('Birthday Pick', '125.000')">Pesan Paket Ini</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img">🧸</div>
+                <div class="card-body">
+                    <h3 class="card-title">Bestie Box</h3>
+                    <div class="card-price">Rp 85.000</div>
+                    <p class="card-desc">Cocok untuk sahabat terbaik! Berisi Notebook/Pouch estetik, Snack porsi pas, Cokelat, & Kartu Ucapan.</p>
+                    <button class="btn-cta" onclick="orderDirect('Bestie Box', '85.000')">Pesan Paket Ini</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img">🌿</div>
+                <div class="card-body">
+                    <h3 class="card-title">Self-Reward Box</h3>
+                    <div class="card-price">Rp 78.000</div>
+                    <p class="card-desc">Apresiasi untuk diri sendiri! Berisi Stationery set, Keychain lucu, Snack favorit, & Kartu Motivasi.</p>
+                    <button class="btn-cta" onclick="orderDirect('Self-Reward Box', '78.000')">Pesan Paket Ini</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img">💐</div>
+                <div class="card-body">
+                    <h3 class="card-title">Thank You Box</h3>
+                    <div class="card-price">Rp 95.000</div>
+                    <p class="card-desc">Ungkapan terima kasih elegan untuk dosen atau senior. Berisi Pouch premium, Notebook, Snack, & Kartu ucapan.</p>
+                    <button class="btn-cta" onclick="orderDirect('Thank You Box', '95.000')">Pesan Paket Ini</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PREVIEW PERSONALISASI -->
+    <section class="personalization-section" id="personalisasi">
+        <div style="text-align: center; max-width: 600px; margin: auto;">
+            <h2>Preview Kartu Ucapan Live 📝</h2>
+            <p>Ketik ucapanmu di bawah dan lihat tampilannya secara langsung!</p>
+        </div>
+
+        <div class="preview-container">
+            <div class="form-group">
+                <label>Nama Penerima (Kepada):</label>
+                <input type="text" id="input-to" placeholder="Contoh: Sarah" oninput="updateCardPreview()">
+
+                <label>Nama Pengirim (Dari):</label>
+                <input type="text" id="input-from" placeholder="Contoh: Budi" oninput="updateCardPreview()">
+
+                <label>Pesan Spesial:</label>
+                <textarea id="input-message" rows="3" placeholder="Selamat ulang tahun ya! Semoga panjang umur..." oninput="updateCardPreview()"></textarea>
+            </div>
+
+            <div class="card-preview">
+                <h4>✨ Kartu Ucapan PickKado ✨</h4>
+                <p><strong>Kepada:</strong> <span id="preview-to">Sarah</span></p>
+                <div class="preview-text" id="preview-msg">"Selamat ulang tahun ya! Semoga panjang umur dan bahagia selalu!"</div>
+                <p><strong>Dari:</strong> <span id="preview-from">Budi</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ ACCORDION -->
+    <section class="faq-section" id="faq">
+        <h2 class="section-title">Pertanyaan Sering Diajukan (FAQ)</h2>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                Bagaimana sistem pemesanan kue di PickKado? <span>+</span>
+            </div>
+            <div class="accordion-content">
+                Kami menggunakan sistem <i>build-to-order</i>. Cake dipesan segar dari bakery/UMKM mitra lokal begitu pesanan Anda dikonfirmasi.
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                Berapa lama proses pengerjaan dan pengiriman? <span>+</span>
+            </div>
+            <div class="accordion-content">
+                Proses perakitan membutuhkan waktu 1 hari kerja. Pengiriman dilakukan menggunakan kurir instan/same-day.
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                Apakah isi paket bisa disesuaikan (custom)? <span>+</span>
+            </div>
+            <div class="accordion-content">
+                Tentu saja! Anda bisa menyesuaikan item tambahan seperti foto, warna pita, hingga pilihan snack sesuai kebutuhan.
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <h3>PickKado - Hampers & Gifts</h3>
+        <p>Universitas Mercu Buana, Jakarta | Area Layanan: Tangerang & Jakarta Barat</p>
+        <p style="margin-top: 1rem;">© 2026 PickKado Team. All rights reserved.</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const userSelections = { recipient: '', occasion: '', budget: '' };
+
+        function selectOption(category, value, element) {
+            userSelections[category] = value;
+            const parent = element.parentElement;
+            parent.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.quiz-step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+        }
+
+        function showRecommendation() {
+            const resultBox = document.getElementById('result-content');
+            const waBtn = document.getElementById('wa-order-btn');
+            
+            let recommendedPackage = "Bestie Box";
+            let price = "Rp 85.000";
+            let description = "Pilihan paling populer untuk sahabat! Berisi kombinasi Snack favorit, Notebook, & Kartu Ucapan manis.";
+
+            if (userSelections.occasion === 'Ulang Tahun' || userSelections.budget === '150k') {
+                recommendedPackage = "Birthday Pick";
+                price = "Rp 125.000";
+                description = "Paket spesial Ulang Tahun lengkap dengan Mini Cake segar dari mitra Bakery, Snack, dan Kartu Ucapan Personalisasi!";
+            } else if (userSelections.recipient === 'Dosen/Senior' || userSelections.occasion === 'Terima Kasih') {
+                recommendedPackage = "Thank You Box";
+                price = "Rp 95.000";
+                description = "Paket ucapan terima kasih elegan berisi Pouch premium, Notebook estetik, & Snack berkualitas.";
+            } else if (userSelections.occasion === 'Self Reward') {
+                recommendedPackage = "Self-Reward Box";
+                price = "Rp 78.000";
+                description = "Paket apresiasi diri yang pas di kantong mahasiswa, berisi Stationery set, Keychain, & Snack favorit.";
+            }
+
+            resultBox.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎁</div>
+                <h3 style="color: var(--primary-blue); font-size: 1.5rem;">${recommendedPackage}</h3>
+                <p style="color: var(--accent-gold); font-weight: bold; font-size: 1.2rem; margin: 0.3rem 0;">${price}</p>
+                <p style="color: #666; max-width: 400px; margin: auto;">${description}</p>
+            `;
+
+            const waText = encodeURIComponent(`Halo Admin PickKado, saya ingin memesan rekomendasi paket *${recommendedPackage}* (${price}) untuk ${userSelections.recipient} dalam rangka ${userSelections.occasion}.`);
+            waBtn.href = `https://wa.me/6288296957992?text=${waText}`;
+
+            nextStep('result');
+        }
+
+        function resetQuiz() {
+            userSelections.recipient = '';
+            userSelections.occasion = '';
+            userSelections.budget = '';
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            nextStep(1);
+        }
+
+        function scrollToQuiz() {
+            document.getElementById('pilih-kado').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateCardPreview() {
+            const to = document.getElementById('input-to').value || 'Sarah';
+            const msg = document.getElementById('input-message').value || 'Selamat ulang tahun ya! Semoga panjang umur dan bahagia selalu!';
+            const from = document.getElementById('input-from').value || 'Budi';
+
+            document.getElementById('preview-to').innerText = to;
+            document.getElementById('preview-msg').innerText = `"${msg}"`;
+            document.getElementById('preview-from').innerText = from;
+        }
+
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            item.classList.toggle('active');
+            const icon = header.querySelector('span');
+            icon.innerText = item.classList.contains('active') ? '−' : '+';
+        }
+
+        function orderDirect(packageName, price) {
+            const waText = encodeURIComponent(`Halo Admin PickKado, saya tertarik untuk memesan paket *${packageName}* (Rp ${price}).`);
+            window.open(`https://wa.me/6288296957992?text=${waText}`, '_blank');
+        }
+    </script>
+</body>
+</html>
